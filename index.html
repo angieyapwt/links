@@ -6,7 +6,7 @@
   <title>estatebasics — property tools</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -20,9 +20,11 @@
       --text-primary: #1a1a18;
       --text-secondary: #5a5a56;
       --text-muted: #9a9a94;
-      --accent: #1a1a18;
       --accent-bg: #f0f0ec;
-      --radius: 8px;
+      --success: #27ae60;
+      --danger: #c0392b;
+      --danger-bg: #fdf0ef;
+      --danger-border: #f0c0bc;
     }
 
     body {
@@ -42,16 +44,16 @@
       margin-bottom: 2.25rem;
     }
 
-    .wordmark-main {
+    .wm-main {
       font-size: 17px;
       font-weight: 500;
       letter-spacing: -0.03em;
       color: var(--text-primary);
       line-height: 1;
     }
-    .wordmark-main span { color: var(--text-muted); font-weight: 300; }
+    .wm-main span { color: var(--text-muted); font-weight: 300; }
 
-    .wordmark-tag {
+    .wm-tag {
       font-family: 'DM Mono', monospace;
       font-size: 9px;
       letter-spacing: 0.13em;
@@ -71,8 +73,10 @@
       font-size: 16px;
       transition: background 0.12s, color 0.12s;
     }
-    .gear-btn:hover { background: var(--surface); color: var(--text-primary); }
-    .gear-btn.active { background: var(--surface); color: var(--text-primary); }
+    .gear-btn:hover, .gear-btn.active {
+      background: var(--surface);
+      color: var(--text-primary);
+    }
 
     /* HERO */
     .hero {
@@ -119,14 +123,13 @@
       padding: 0.9rem 1.1rem;
       text-decoration: none;
       border-bottom: 0.5px solid var(--border);
-      cursor: pointer;
       transition: background 0.1s;
     }
     .link-row:last-child { border-bottom: none; }
     .link-row:hover { background: var(--accent-bg); }
     .link-row:active { background: #e8e8e4; }
 
-    .link-icon-wrap {
+    .link-icon {
       width: 38px; height: 38px;
       border-radius: 9px;
       background: var(--surface-alt);
@@ -137,7 +140,7 @@
       color: var(--text-secondary);
       transition: color 0.1s, background 0.1s, border-color 0.1s;
     }
-    .link-row:hover .link-icon-wrap {
+    .link-row:hover .link-icon {
       color: var(--text-primary);
       background: #e4e4e0;
       border-color: rgba(0,0,0,0.18);
@@ -162,7 +165,7 @@
       text-overflow: ellipsis;
     }
     .link-arrow {
-      font-size: 15px;
+      font-size: 14px;
       color: var(--text-muted);
       flex-shrink: 0;
     }
@@ -181,7 +184,7 @@
       overflow: hidden;
     }
 
-    .edit-card-header {
+    .edit-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -189,22 +192,20 @@
       border-bottom: 0.5px solid var(--border);
       background: var(--surface-alt);
     }
-    .edit-card-title {
+    .edit-title {
       font-family: 'DM Mono', monospace;
       font-size: 10px;
       letter-spacing: 0.1em;
       text-transform: uppercase;
       color: var(--text-secondary);
     }
-
     .edit-hint {
       font-family: 'DM Mono', monospace;
       font-size: 9px;
       color: var(--text-muted);
-      letter-spacing: 0.05em;
     }
 
-    .edit-rows { padding: 0.4rem 0; }
+    .edit-rows { padding: 0.3rem 0; }
 
     .edit-item {
       display: flex;
@@ -212,8 +213,21 @@
       gap: 8px;
       padding: 0.5rem 1.1rem;
       border-bottom: 0.5px solid var(--border);
+      transition: background 0.1s;
     }
     .edit-item:last-child { border-bottom: none; }
+    .edit-item.drag-over { background: #eef4ff; }
+    .edit-item.dragging { opacity: 0.4; }
+
+    .drag-handle {
+      font-size: 15px;
+      color: var(--text-muted);
+      cursor: grab;
+      flex-shrink: 0;
+      user-select: none;
+      padding: 2px;
+    }
+    .drag-handle:active { cursor: grabbing; }
 
     .edit-inputs { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 5px; }
     .edit-inputs input {
@@ -236,11 +250,11 @@
     }
     .edit-inputs input:focus {
       border-color: rgba(0,0,0,0.3);
-      background: #fff;
+      background: var(--surface);
     }
 
     .del-btn {
-      width: 28px; height: 28px;
+      width: 27px; height: 27px;
       border: 0.5px solid var(--border);
       border-radius: 6px;
       background: transparent;
@@ -251,7 +265,11 @@
       flex-shrink: 0;
       transition: color 0.1s, border-color 0.1s, background 0.1s;
     }
-    .del-btn:hover { color: #c0392b; border-color: #f0c0bc; background: #fdf0ef; }
+    .del-btn:hover {
+      color: var(--danger);
+      border-color: var(--danger-border);
+      background: var(--danger-bg);
+    }
 
     .edit-footer {
       padding: 0.85rem 1.1rem;
@@ -277,7 +295,7 @@
     }
     .add-btn:hover { background: var(--bg); }
 
-    .save-btn {
+    .copy-btn {
       width: 100%;
       padding: 9px;
       background: var(--text-primary);
@@ -291,7 +309,7 @@
       display: flex; align-items: center; justify-content: center; gap: 6px;
       transition: opacity 0.12s;
     }
-    .save-btn:hover { opacity: 0.78; }
+    .copy-btn:hover { opacity: 0.78; }
 
     .save-note {
       font-family: 'DM Mono', monospace;
@@ -300,8 +318,8 @@
       text-align: center;
       line-height: 1.5;
     }
-    .save-note.success { color: #27ae60; }
-    .save-note.error { color: #c0392b; }
+    .save-note.ok { color: var(--success); }
+    .save-note.err { color: var(--danger); }
 
     /* FOOTER */
     .page-footer {
@@ -309,7 +327,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 7px;
+      gap: 6px;
     }
     .footer-dot {
       width: 3px; height: 3px;
@@ -323,14 +341,23 @@
       color: var(--text-muted);
       text-transform: uppercase;
     }
+
+    /* LOADING STATE */
+    .loading {
+      padding: 2rem;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+      font-family: 'DM Mono', monospace;
+    }
   </style>
 </head>
 <body>
 
   <div class="top-bar">
     <div>
-      <div class="wordmark-main">estate<span>basics</span></div>
-      <div class="wordmark-tag">property tools</div>
+      <div class="wm-main">estate<span>basics</span></div>
+      <div class="wm-tag">property tools</div>
     </div>
     <button class="gear-btn" id="gearBtn" onclick="toggleEdit()" aria-label="manage links">
       <i class="ti ti-settings" aria-hidden="true"></i>
@@ -344,24 +371,24 @@
   </div>
 
   <div class="link-stack" id="linkStack">
-    <div style="padding:2rem;text-align:center;font-size:13px;color:var(--text-muted);">Loading...</div>
+    <div class="loading">loading...</div>
   </div>
 
   <div class="edit-section" id="editSection">
     <div class="edit-card">
-      <div class="edit-card-header">
-        <div class="edit-card-title">manage links</div>
-        <div class="edit-hint">edit links.json to update</div>
+      <div class="edit-header">
+        <div class="edit-title">manage links</div>
+        <div class="edit-hint">drag to reorder</div>
       </div>
       <div class="edit-rows" id="editRows"></div>
       <div class="edit-footer">
         <button class="add-btn" onclick="addRow()">
           <i class="ti ti-plus" aria-hidden="true"></i> add link
         </button>
-        <button class="save-btn" onclick="copyJson()">
-          <i class="ti ti-copy" aria-hidden="true"></i> copy links.json content
+        <button class="copy-btn" onclick="copyJson()">
+          <i class="ti ti-copy" aria-hidden="true"></i> copy links.json
         </button>
-        <div class="save-note" id="saveNote">copy the JSON, then paste it into links.json on GitHub</div>
+        <div class="save-note" id="saveNote">paste into links.json on GitHub and commit</div>
       </div>
     </div>
   </div>
@@ -373,38 +400,46 @@
   </div>
 
   <script>
-    const ICON_GUESS = (label) => {
-      const l = label.toLowerCase();
-      if (l.includes('calc')) return 'ti-calculator';
-      if (l.includes('hdb')) return 'ti-building-estate';
-      if (l.includes('condo') || l.includes('private')) return 'ti-building-skyscraper';
-      if (l.includes('instagram') || l.includes('ig')) return 'ti-brand-instagram';
-      if (l.includes('whatsapp')) return 'ti-brand-whatsapp';
-      if (l.includes('tiktok')) return 'ti-brand-tiktok';
-      if (l.includes('pdf') || l.includes('form') || l.includes('doc')) return 'ti-file-description';
-      if (l.includes('map') || l.includes('location')) return 'ti-map-pin';
+    const ICON_GUESS = label => {
+      const s = label.toLowerCase();
+      if (s.includes('calc')) return 'ti-calculator';
+      if (s.includes('hdb')) return 'ti-building-estate';
+      if (s.includes('condo') || s.includes('private')) return 'ti-building-skyscraper';
+      if (s.includes('instagram') || s.includes('ig')) return 'ti-brand-instagram';
+      if (s.includes('whatsapp')) return 'ti-brand-whatsapp';
+      if (s.includes('tiktok')) return 'ti-brand-tiktok';
+      if (s.includes('pdf') || s.includes('form') || s.includes('doc')) return 'ti-file-description';
+      if (s.includes('map') || s.includes('location')) return 'ti-map-pin';
+      if (s.includes('email') || s.includes('mail')) return 'ti-mail';
+      if (s.includes('notion')) return 'ti-brand-notion';
+      if (s.includes('sheet') || s.includes('excel')) return 'ti-table';
+      if (s.includes('video') || s.includes('youtube')) return 'ti-brand-youtube';
       return 'ti-link';
     };
 
-    const hostname = (url) => {
+    const host = url => {
       try { return new URL(url).hostname.replace('www.', ''); } catch { return url; }
     };
 
     let links = [];
     let editOpen = false;
+    let dragSrc = null;
 
-    // Load links.json from the same repo
-    fetch('links.json')
+    fetch('links.json?t=' + Date.now())
       .then(r => r.json())
       .then(data => { links = data; renderLinks(); })
       .catch(() => {
         document.getElementById('linkStack').innerHTML =
-          '<div style="padding:1.5rem;text-align:center;font-size:13px;color:var(--text-muted);">Could not load links.json</div>';
+          '<div class="loading">could not load links.json</div>';
       });
 
     function renderLinks() {
       const stack = document.getElementById('linkStack');
       stack.innerHTML = '';
+      if (!links.length) {
+        stack.innerHTML = '<div class="loading">no links yet — tap the gear to add some</div>';
+        return;
+      }
       links.forEach(l => {
         const a = document.createElement('a');
         a.className = 'link-row';
@@ -412,13 +447,12 @@
         a.target = '_blank';
         a.rel = 'noopener';
         a.innerHTML = `
-          <div class="link-icon-wrap"><i class="ti ${l.icon || ICON_GUESS(l.label)}" aria-hidden="true"></i></div>
+          <div class="link-icon"><i class="ti ${l.icon || ICON_GUESS(l.label)}" aria-hidden="true"></i></div>
           <div class="link-text">
             <div class="link-name">${l.label}</div>
-            <div class="link-domain">${hostname(l.url)}</div>
+            <div class="link-domain">${host(l.url)}</div>
           </div>
-          <i class="ti ti-arrow-up-right link-arrow" aria-hidden="true"></i>
-        `;
+          <i class="ti ti-arrow-up-right link-arrow" aria-hidden="true"></i>`;
         stack.appendChild(a);
       });
     }
@@ -429,7 +463,10 @@
       links.forEach((l, i) => {
         const d = document.createElement('div');
         d.className = 'edit-item';
+        d.draggable = true;
+        d.dataset.idx = i;
         d.innerHTML = `
+          <i class="ti ti-grip-vertical drag-handle" aria-hidden="true"></i>
           <div class="edit-inputs">
             <input type="text" value="${l.label}" placeholder="label"
               onchange="links[${i}].label=this.value; links[${i}].icon=ICON_GUESS(this.value)" />
@@ -438,8 +475,32 @@
           </div>
           <button class="del-btn" onclick="removeRow(${i})" aria-label="remove link">
             <i class="ti ti-trash" aria-hidden="true"></i>
-          </button>
-        `;
+          </button>`;
+        d.addEventListener('dragstart', e => {
+          dragSrc = i;
+          e.dataTransfer.effectAllowed = 'move';
+          setTimeout(() => d.classList.add('dragging'), 0);
+        });
+        d.addEventListener('dragend', () => {
+          d.classList.remove('dragging');
+          document.querySelectorAll('.edit-item').forEach(el => el.classList.remove('drag-over'));
+        });
+        d.addEventListener('dragover', e => {
+          e.preventDefault();
+          e.dataTransfer.dropEffect = 'move';
+          document.querySelectorAll('.edit-item').forEach(el => el.classList.remove('drag-over'));
+          d.classList.add('drag-over');
+        });
+        d.addEventListener('drop', e => {
+          e.preventDefault();
+          const tgt = parseInt(d.dataset.idx);
+          if (dragSrc === null || dragSrc === tgt) return;
+          const moved = links.splice(dragSrc, 1)[0];
+          links.splice(tgt, 0, moved);
+          dragSrc = null;
+          renderEditRows();
+          renderLinks();
+        });
         rows.appendChild(d);
       });
     }
@@ -464,18 +525,17 @@
 
     function copyJson() {
       const json = JSON.stringify(links, null, 2);
+      const note = document.getElementById('saveNote');
       navigator.clipboard.writeText(json).then(() => {
-        const note = document.getElementById('saveNote');
-        note.textContent = 'copied! now paste into links.json on GitHub and commit.';
-        note.className = 'save-note success';
+        note.textContent = 'copied. paste into links.json on GitHub and commit.';
+        note.className = 'save-note ok';
         setTimeout(() => {
-          note.textContent = 'copy the JSON, then paste it into links.json on GitHub';
+          note.textContent = 'paste into links.json on GitHub and commit';
           note.className = 'save-note';
         }, 3500);
       }).catch(() => {
-        const note = document.getElementById('saveNote');
-        note.textContent = 'could not copy — try a different browser';
-        note.className = 'save-note error';
+        note.textContent = 'copy failed. try a different browser.';
+        note.className = 'save-note err';
       });
     }
   </script>
