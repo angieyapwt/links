@@ -35,7 +35,6 @@
       padding: 0 0 3rem;
     }
 
-    /* TOP BAR */
     .top-bar {
       display: flex;
       align-items: center;
@@ -78,7 +77,6 @@
       color: var(--text-primary);
     }
 
-    /* HERO */
     .hero {
       padding: 0 1.5rem 1.75rem;
       border-bottom: 0.5px solid var(--border-strong);
@@ -107,7 +105,6 @@
       font-weight: 300;
     }
 
-    /* LINK STACK */
     .link-stack {
       margin: 0 1.5rem;
       border: 0.5px solid var(--border-strong);
@@ -170,7 +167,6 @@
       flex-shrink: 0;
     }
 
-    /* EDIT PANEL */
     .edit-section {
       margin: 1.75rem 1.5rem 0;
       display: none;
@@ -226,6 +222,7 @@
       flex-shrink: 0;
       user-select: none;
       padding: 2px;
+      touch-action: none;
     }
     .drag-handle:active { cursor: grabbing; }
 
@@ -321,7 +318,6 @@
     .save-note.ok { color: var(--success); }
     .save-note.err { color: var(--danger); }
 
-    /* FOOTER */
     .page-footer {
       margin-top: 2.5rem;
       display: flex;
@@ -342,7 +338,6 @@
       text-transform: uppercase;
     }
 
-    /* LOADING STATE */
     .loading {
       padding: 2rem;
       text-align: center;
@@ -414,12 +409,16 @@
       if (s.includes('notion')) return 'ti-brand-notion';
       if (s.includes('sheet') || s.includes('excel')) return 'ti-table';
       if (s.includes('video') || s.includes('youtube')) return 'ti-brand-youtube';
+      if (s.includes('cosell')) return 'ti-building-community';
       return 'ti-link';
     };
 
     const host = url => {
       try { return new URL(url).hostname.replace('www.', ''); } catch { return url; }
     };
+
+    // Safely escape values for use inside HTML attribute strings
+    const esc = str => str.replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
     let links = [];
     let editOpen = false;
@@ -436,11 +435,12 @@
     function renderLinks() {
       const stack = document.getElementById('linkStack');
       stack.innerHTML = '';
-      if (!links.length) {
+      const valid = links.filter(l => l.label && l.url);
+      if (!valid.length) {
         stack.innerHTML = '<div class="loading">no links yet — tap the gear to add some</div>';
         return;
       }
-      links.forEach(l => {
+      valid.forEach(l => {
         const a = document.createElement('a');
         a.className = 'link-row';
         a.href = l.url;
@@ -460,22 +460,49 @@
     function renderEditRows() {
       const rows = document.getElementById('editRows');
       rows.innerHTML = '';
+
       links.forEach((l, i) => {
         const d = document.createElement('div');
         d.className = 'edit-item';
         d.draggable = true;
         d.dataset.idx = i;
-        d.innerHTML = `
-          <i class="ti ti-grip-vertical drag-handle" aria-hidden="true"></i>
-          <div class="edit-inputs">
-            <input type="text" value="${l.label}" placeholder="label"
-              onchange="links[${i}].label=this.value; links[${i}].icon=ICON_GUESS(this.value)" />
-            <input class="mono" type="url" value="${l.url}" placeholder="https://"
-              onchange="links[${i}].url=this.value" />
-          </div>
-          <button class="del-btn" onclick="removeRow(${i})" aria-label="remove link">
-            <i class="ti ti-trash" aria-hidden="true"></i>
-          </button>`;
+
+        // Build inputs manually to avoid innerHTML clobbering event listeners
+        d.innerHTML = `<i class="ti ti-grip-vertical drag-handle" aria-hidden="true"></i>`;
+
+        const wrap = document.createElement('div');
+        wrap.className = 'edit-inputs';
+
+        const labelInput = document.createElement('input');
+        labelInput.type = 'text';
+        labelInput.placeholder = 'label';
+        labelInput.value = l.label || '';
+        labelInput.addEventListener('input', e => {
+          links[i].label = e.target.value;
+          links[i].icon = ICON_GUESS(e.target.value);
+        });
+
+        const urlInput = document.createElement('input');
+        urlInput.type = 'url';
+        urlInput.className = 'mono';
+        urlInput.placeholder = 'https://';
+        urlInput.value = l.url || '';
+        urlInput.addEventListener('input', e => {
+          links[i].url = e.target.value;
+        });
+
+        wrap.appendChild(labelInput);
+        wrap.appendChild(urlInput);
+        d.appendChild(wrap);
+
+        const delBtn = document.createElement('button');
+        delBtn.className = 'del-btn';
+        delBtn.setAttribute('aria-label', 'remove link');
+        delBtn.innerHTML = '<i class="ti ti-trash" aria-hidden="true"></i>';
+        delBtn.addEventListener('click', () => removeRow(i));
+        d.appendChild(delBtn);
+
+        // Drag events
         d.addEventListener('dragstart', e => {
           dragSrc = i;
           e.dataTransfer.effectAllowed = 'move';
@@ -501,6 +528,7 @@
           renderEditRows();
           renderLinks();
         });
+
         rows.appendChild(d);
       });
     }
@@ -524,7 +552,9 @@
     }
 
     function copyJson() {
-      const json = JSON.stringify(links, null, 2);
+      // Strip out blank rows before copying
+      const clean = links.filter(l => l.label.trim() && l.url.trim());
+      const json = JSON.stringify(clean, null, 2);
       const note = document.getElementById('saveNote');
       navigator.clipboard.writeText(json).then(() => {
         note.textContent = 'copied. paste into links.json on GitHub and commit.';
