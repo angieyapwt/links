@@ -1,5 +1,10 @@
 [
   {
+    "label": "Timeline Generator",
+    "url": "https://angieyapwt.github.io/Timeline-Generator/",
+    "icon": "ti-link"
+  },
+  {
     "label": "HDB buying calculator",
     "url": "https://angieyapwt.github.io/hdb-calculator/",
     "icon": "ti-calculator"
