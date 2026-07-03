@@ -1,5 +1,10 @@
 [
   {
+    "label": "",
+    "url": "",
+    "icon": "ti-link"
+  },
+  {
     "label": "HDB buying calculator",
     "url": "https://angieyapwt.github.io/hdb-calculator/",
     "icon": "ti-calculator"
@@ -13,5 +18,10 @@
     "label": "Condo calculator",
     "url": "https://angieyapwt.github.io/condocalculator/",
     "icon": "ti-building-skyscraper"
+  },
+  {
+    "label": "",
+    "url": "",
+    "icon": "ti-link"
   }
 ]
