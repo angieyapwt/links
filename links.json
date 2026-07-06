@@ -18,5 +18,10 @@
     "label": "Condo calculator",
     "url": "https://angieyapwt.github.io/condocalculator/",
     "icon": "ti-building-skyscraper"
+  },
+  {
+    "label": "Email Doc Builder - Rental",
+    "url": "https://angieyapwt.github.io/rental-email-doc-builder/",
+    "icon": "ti-file-description"
   }
 ]
