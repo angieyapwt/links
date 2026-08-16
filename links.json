@@ -5,6 +5,16 @@
     "icon": "ti-link"
   },
   {
+    "label": "Property Lookout",
+    "url": "https://script.google.com/macros/s/AKfycbyk1HrZaxrRZvilIsEMt0_HQBqihlpynm7QQmzxtUHtW3wwPG_LAZ6VDKSss3yRx2Vp/exec",
+    "icon": "ti-link"
+  },
+  {
+    "label": "Handover360",
+    "url": "https://angieyapwt.github.io/handover360/?fresh=24",
+    "icon": "ti-link"
+  },
+  {
     "label": "HDB buying calculator",
     "url": "https://angieyapwt.github.io/hdb-calculator/",
     "icon": "ti-calculator"
