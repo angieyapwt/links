@@ -33,5 +33,10 @@
     "label": "Email Doc Builder - Rental",
     "url": "https://angieyapwt.github.io/rental-email-doc-builder/",
     "icon": "ti-file-description"
+  },
+  {
+    "label": "Business Hub",
+    "url": "https://script.google.com/macros/s/AKfycbxeTQPIOyVzIf1JUxtQzOZKTeKoss38QdzQIcRpqu-D9d7m2CtvLSPMRdJDOtFovHrt0g/exec",
+    "icon": "ti-link"
   }
 ]
