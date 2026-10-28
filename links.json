@@ -15,19 +15,9 @@
     "icon": "ti-link"
   },
   {
-    "label": "HDB buying calculator",
-    "url": "https://angieyapwt.github.io/hdb-calculator/",
+    "label": "Property Planner calculator",
+    "url": "https://angieyapwt.github.io/property-planner/",
     "icon": "ti-calculator"
-  },
-  {
-    "label": "HDB selling calculator",
-    "url": "https://angieyapwt.github.io/Hdb-calculator-selling-only/",
-    "icon": "ti-building-estate"
-  },
-  {
-    "label": "Condo calculator",
-    "url": "https://angieyapwt.github.io/condocalculator/",
-    "icon": "ti-building-skyscraper"
   },
   {
     "label": "Email Doc Builder - Rental",
